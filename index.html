@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="normalize.css" media="screen">
+    <link rel="stylesheet" href="resets.css" media="screen">
+    <link rel="stylesheet" href="css/styles.css" media="screen">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online CV</title>
+</head>
+<body>
+    <header>
+        <p>I am header with an unordered list of hyperlinks</p>
+        <ul class="nav">
+            <li><a href="#about">About</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </header>
+
+    <section>
+        <img src="your-image.jpg" alt="A profile image">
+        <p>I am an image and I'm all by myself</p>
+    </section>
+
+    <div class="page-content">
+        <div class="card" id="about">
+        <p class="card-header">About</p>
+        <p class="card-body">Hello! Tell us about yourself.</p>
+        </div>
+        <div class="card" id="education">
+        <p class="card-header">Education</p>
+        <p class="card-body">Tell us about your education</p>
+        </div>
+        <div class="card" id="skills">
+        <p class="card-header">Skills</p>
+        <p class="card-body">Tell us about your IT Skills>
+        </div>
+        <div class="card" id="portfolio">
+        <p class="card-header">Portfolio</p>
+        <p class="card-body">Share your previous IT projects</p>
+        </div>
+        <div class="card" id="contact">
+            <p class="card-header">Contact</p>
+            <p class="card-body">Contact me for more information</p>
+            </div>
+            <h2>Student List</h2>
+            <ul id="student-list" class="card-body"></p>
+            <br><br><br>
+    </div>
+
+    <footer>
+        I am a footer, the last section of this page
+    </footer>
+
+    <script>
+        const jsonURL = "students.json"; // Ensure this file is in the same folder
+
+        fetch(jsonURL)
+            .then(response => response.json())
+            .then(data => {
+                let studentList = document.getElementById("student-list");
+
+                if (data.students && Array.isArray(data.students)) {
+                    data.students.forEach(student => {
+                        let listItem = document.createElement("li");
+                        listItem.textContent = `${student.name} - ${student.age} (Course: ${student.course})`;
+                        studentList.appendChild(listItem);
+                    });
+                } else {
+                    console.error("Expected 'students' array but got:", data);
+                }
+            })
+            .catch(error => console.error("Error fetching JSON:", error));
+    </script>
+
+<h2>Subjects Taken</h2>
+
+<!-- Step 1: Search bar added -->
+<input type="text" id="searchInput" placeholder="Search by description..." onkeyup="filterCourses()">
+
+<table>
+    <thead>
+        <tr>
+            <th>Year Level</th>
+            <th>Semester</th>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Credit</th>
+        </tr>
+    </thead>
+    <tbody id="coursesTable"></tbody>
+</table>
+
+<script>
+    let courses = [];
+
+    async function fetchCourses() {
+        try {
+            const response = await fetch('https://yourusername.github.io/courses.json'); // Replace with your actual GitHub URL
+            courses = await response.json();
+            displayCourses(courses);
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        }
+    }
+
+    function displayCourses(data) {
+        const coursesTable = document.getElementById('coursesTable');
+        coursesTable.innerHTML = ""; // Clear table before displaying new data
+        data.forEach(course => {
+            const row = `
+                <tr>
+                    <td>${course.year_level}</td>
+                    <td>${course.sem}</td>
+                    <td>${course.code}</td>
+                    <td>${course.description}</td>
+                    <td>${course.credit}</td>
+                </tr>
+            `;
+            coursesTable.innerHTML += row;
+        });
+    }
+
+    function filterCourses() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const filteredCourses = courses.filter(course =>
+            course.description.toLowerCase().includes(searchText)
+        );
+        displayCourses(filteredCourses);
+    }
+
+    fetchCourses();
+</script>
+</body>
+</html>
